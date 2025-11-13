@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 16 Wednesday & Thursday Practice Quiz</title>
+    <style>
+        /* --- Color Variables --- */
+        :root {
+            /* Default: Dark Theme */
+            --bg-color: #2d343e;
+            /* Dark background */
+            --container-bg: #3c424f;
+            /* Slightly lighter container */
+            --text-color: #e8e6e3;
+            /* Light text */
+            --question-text-color: #8ab4f8;
+            /* Light blue for questions */
+            --lo-text-color: #b0c4de;
+            /* Lighter blue for learning objective */
+            --border-color: #555;
+            /* Darker borders */
+            --separator-color: #4a4f5a;
+            --label-bg: #454c5a;
+            --label-border: #6c757d;
+            --label-hover-bg: #525966;
+            --label-hover-border: #7a828a;
+            --button-bg: #8ab4f8;
+            --button-text: #202124;
+            --button-hover-bg: #a3c5f9;
+            --button-disabled-bg: #5f6368;
+            --feedback-correct-bg: #344e41;
+            --feedback-correct-text: #c7f9cc;
+            --feedback-correct-border: #52b788;
+            --feedback-incorrect-bg: #5e2129;
+            --feedback-incorrect-text: #f8d7da;
+            --feedback-incorrect-border: #a4133c;
+            --feedback-rationale-text: #adb5bd;
+            /* Lighter gray for rationale */
+            --feedback-source-text: #c7d3e0;
+            --feedback-separator: #6c757d;
+            --radio-accent: #8ab4f8;
+        }
+
+        .light-theme {
+            --bg-color: #eef2f7;
+            --container-bg: #ffffff;
+            --text-color: #343a40;
+            --question-text-color: #0056b3;
+            --lo-text-color: #5a6e8a;
+            --border-color: #dee2e6;
+            --separator-color: #e9ecef;
+            --label-bg: #f8f9fa;
+            --label-border: #ced4da;
+            --label-hover-bg: #e2e6ea;
+            --label-hover-border: #adb5bd;
+            --button-bg: #007bff;
+            --button-text: white;
+            --button-hover-bg: #0056b3;
+            --button-disabled-bg: #6c757d;
+            --feedback-correct-bg: #d1e7dd;
+            --feedback-correct-text: #0f5132;
+            --feedback-correct-border: #badbcc;
+            --feedback-incorrect-bg: #f8d7da;
+            --feedback-incorrect-text: #842029;
+            --feedback-incorrect-border: #f5c2c7;
+            --feedback-rationale-text: #495057;
+            --feedback-source-text: #343a40;
+            --feedback-separator: #ccc;
+            --radio-accent: #007bff;
+        }
+
+        /* --- General Styles --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.7;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 40px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle-button {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--label-border);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            z-index: 1000;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle-button:hover {
+            opacity: 0.8;
+        }
+
+        #quiz-container {
+            max-width: 900px;
+            margin: 80px auto 30px auto;
+            background: var(--container-bg);
+            padding: 25px 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-block {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--separator-color);
+            transition: border-color 0.3s;
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 5px;
+        }
+
+        .learning-objective {
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--lo-text-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--separator-color);
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 18px;
+            color: var(--question-text-color);
+            transition: color 0.3s;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--label-border);
+            background-color: var(--label-bg);
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .options label:hover {
+            background-color: var(--label-hover-bg);
+            border-color: var(--label-hover-border);
+        }
+
+        .options input[type="radio"]:checked+span {
+            font-weight: bold;
+            color: var(--question-text-color);
+        }
+
+        .options input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--radio-accent);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .check-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s, color 0.2s, opacity 0.2s;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+        }
+
+        .check-button:hover {
+            opacity: 0.85;
+        }
+
+        .check-button:disabled {
+            background-color: var(--button-disabled-bg);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            display: none;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-correct-bg);
+            color: var(--feedback-correct-text);
+            border-color: var(--feedback-correct-border);
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-incorrect-bg);
+            color: var(--feedback-incorrect-text);
+            border-color: var(--feedback-incorrect-border);
+            display: block;
+        }
+
+        .feedback-status {
+            font-weight: bold;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .feedback-rationale {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--feedback-separator);
+            font-size: 0.9em;
+            color: var(--feedback-rationale-text);
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .feedback-source {
+            margin-top: 10px;
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--feedback-source-text);
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--question-text-color);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle-button">Toggle Theme</button>
+    <h1>Week 16 Wednesday & Thursday Practice Quiz</h1>
+    <div id="quiz-container">
+        <!-- Questions will be loaded here by JavaScript -->
+    </div>
+    <script>
+        const quizData = [
+            // Metabolic and Mitochondrial Myopathies
+            {
+                learningObjective: "LO 1 (Metabolic and Mitochondrial Myopathies): Explain metabolism and energy sources in exercising and resting muscle.",
+                question: "A 22-year-old collegiate sprinter is competing in a 100-meter dash. The race lasts approximately 10 seconds. Which of the following is the primary energy source used by her muscles during this explosive, short-duration activity?",
+                options: {
+                    A: "Blood glucose via aerobic respiration",
+                    B: "Free fatty acids via β-oxidation",
+                    C: "Muscle glycogen via glycolysis",
+                    D: "Pre-existing ATP and creatine phosphate"
+                },
+                correctAnswer: "D",
+                rationale: "For extremely short, high-intensity activities lasting up to about 10 seconds, the muscles rely on the immediately available energy from the pre-existing ATP pool and the rapid regeneration of ATP from creatine phosphate.",
+                source: "\"At the start of muscle activity, the first source of ATP is the pre-existing ATP pool and the creatine phosphate system... This process happens almost instantaneously, but the supply is very limited, lasting only a few seconds – typically up to 10 seconds during activities like sprinting or heavy lifting.\" (Metabolic and Mitochondrial Myopathies, Slide 2)"
+            },
+            {
+                learningObjective: "LO 1 (Metabolic and Mitochondrial Myopathies): Explain metabolism and energy sources in exercising and resting muscle.",
+                question: "A 45-year-old man is participating in a 400-meter run, which he completes in 75 seconds. His muscles are working at a high intensity, and oxygen delivery becomes limited. Which metabolic pathway and substrate are predominantly fueling his muscles during the majority of this run?",
+                options: {
+                    A: "Aerobic metabolism of free fatty acids",
+                    B: "Anaerobic glycolysis of muscle glycogen",
+                    C: "Aerobic metabolism of blood glucose",
+                    D: "The creatine phosphate system"
+                },
+                correctAnswer: "B",
+                rationale: "For activities lasting from seconds to a few minutes, muscles shift to using stored muscle glycogen. When the exercise is intense and oxygen is limited, this glycogen is broken down via anaerobic glycolysis, which produces ATP quickly but also generates lactate.",
+                source: "\"Glycogen is broken down into glucose, which enters glycolysis, a process that produces ATP quickly but less efficiently than aerobic metabolism. If oxygen is limited, the end product is lactate... This pathway dominates for activities lasting from seconds to a few minutes, such as a 400-meter run.\" (Metabolic and Mitochondrial Myopathies, Slide 2)"
+            },
+            {
+                learningObjective: "LO 1 (Metabolic and Mitochondrial Myopathies): Explain metabolism and energy sources in exercising and resting muscle.",
+                question: "A 30-year-old ultramarathon runner is 5 hours into a 50-mile race, maintaining a moderate, steady pace. At this point in the race, which of the following serves as the main source of energy for her skeletal muscles?",
+                options: {
+                    A: "Muscle glycogen",
+                    B: "Blood glucose",
+                    C: "Creatine phosphate",
+                    D: "Free fatty acids"
+                },
+                correctAnswer: "D",
+                rationale: "During prolonged, moderate-intensity endurance activities, muscle glycogen stores become depleted. The body then shifts to using free fatty acids as the primary fuel source. Fatty acids are oxidized in the mitochondria to generate a large, sustainable supply of ATP.",
+                source: "\"For prolonged exercise, the body shifts to utilizing free fatty acids as a primary fuel source. Fatty acids are oxidized in the mitochondria through β-oxidation and the electron transport chain, generating a substantial amount of ATP.\" (Metabolic and Mitochondrial Myopathies, Slide 2)"
+            },
+            {
+                learningObjective: "LO 2 (Metabolic and Mitochondrial Myopathies): Explain how defects in carbohydrate and fatty acid metabolism and mitochondriopathies affect muscle function.",
+                question: "A 19-year-old male presents with a history of severe muscle cramps, fatigue, and dark urine (myoglobinuria) that occur shortly after he begins high-intensity exercise, such as weightlifting. He notes that if he rests for a few minutes and then resumes at a lower intensity, his symptoms improve (a \"second wind\"). These symptoms are most characteristic of a defect in which metabolic pathway?",
+                options: {
+                    A: "Fatty acid oxidation",
+                    B: "Glycogen metabolism",
+                    C: "Mitochondrial respiratory chain",
+                    D: "Purine nucleotide cycle"
+                },
+                correctAnswer: "B",
+                rationale: "Defects in glycogen metabolism, such as McArdle disease (a glycogen storage disease), classically present with exercise intolerance, cramping, and myoglobinuria during brief, high-intensity exercise. This is because the muscle cannot break down glycogen for the rapid energy supply needed for anaerobic activity.",
+                source: "\"Classic symptoms of the metabolic myopathies, including exertional fatigue, myalgias, cramping or contractures, and myoglobinuria may emerge during times of high energy demand due to exercise... This explains the characteristic pattern of cramping, stiffness, and myalgias shortly after brief, maximal exertion associated with several of the glycogen storage diseases (GSDs).\" (Metabolic and Mitochondrial Myopathies, Slide 4)"
+            },
+            {
+                learningObjective: "LO 2 (Metabolic and Mitochondrial Myopathies): Explain how defects in carbohydrate and fatty acid metabolism and mitochondriopathies affect muscle function.",
+                question: "A 25-year-old woman reports muscle weakness, pain, and episodes of rhabdomyolysis after prolonged, moderate-intensity exercise, such as a long hike, especially if she has been fasting. High-intensity exercise for short durations does not cause symptoms. This clinical presentation is most suggestive of a defect in which pathway?",
+                options: {
+                    A: "Glycogenolysis",
+                    B: "Glycolysis",
+                    C: "Fatty acid oxidation (FAO)",
+                    D: "The creatine phosphate system"
+                },
+                correctAnswer: "C",
+                rationale: "Fatty acids are the primary fuel source during prolonged, moderate-intensity exercise and during fasting. Disorders of fatty acid oxidation (FAOD) therefore manifest with symptoms of muscle weakness and rhabdomyolysis under these specific metabolic stresses.",
+                source: "\"In contrast, symptoms associated with disorders of lipid metabolism typically appear after prolonged, moderate-intensity exercise, such as jogging or swimming.\" (Metabolic and Mitochondrial Myopathies, Slide 4)"
+            },
+            {
+                learningObjective: "LO 2 (Metabolic and Mitochondrial Myopathies): Explain how defects in carbohydrate and fatty acid metabolism and mitochondriopathies affect muscle function.",
+                question: "A 10-year-old boy presents with progressive muscle weakness, exercise intolerance, and elevated serum lactate levels both at rest and during exercise. A muscle biopsy shows \"ragged red fibers.\" These findings are most indicative of a primary defect in which of the following?",
+                options: {
+                    A: "Lysosomal glycogen storage",
+                    B: "Carnitine transport",
+                    C: "Mitochondrial energy production",
+                    D: "Cytosolic glycolysis"
+                },
+                correctAnswer: "C",
+                rationale: "Mitochondrial myopathies are caused by mutations affecting the mitochondrial respiratory chain, which impairs aerobic energy production. This leads to a multisystem presentation including exercise intolerance, weakness, and lactic acidosis (due to a compensatory increase in anaerobic glycolysis). \"Ragged red fibers\" on biopsy are a hallmark of abnormal mitochondrial accumulation.",
+                source: "The table lists \"Mitochondrial Myopathies\" as having symptoms of \"Exercise intolerance, muscle weakness, lactic acidosis, multi-system involvement\" and lists \"MELAS, MERRF, Kearns-Sayre syndrome\" as examples, which are known for ragged-red fibers. (Metabolic and Mitochondrial Myopathies, Slide 5)"
+            },
+            {
+                learningObjective: "LO 3 (Metabolic and Mitochondrial Myopathies): Explain the concept of heteroplasmy and its relevance in the heterogenous nature of symptoms seen in the nine main forms of mitochondrial myopathy disorders.",
+                question: "A 35-year-old woman is diagnosed with a mitochondrial myopathy due to a known mtDNA mutation. Her 10-year-old son has a much more severe form of the disease, while her 8-year-old daughter is nearly asymptomatic. What concept best explains this wide variation in clinical severity among family members with the same mtDNA mutation?",
+                options: {
+                    A: "Autosomal dominant inheritance",
+                    B: "X-linked inheritance",
+                    C: "Heteroplasmy",
+                    D: "Genomic imprinting"
+                },
+                correctAnswer: "C",
+                rationale: "Heteroplasmy is the presence of both normal (wild-type) and mutated mitochondrial DNA (mtDNA) within the same cell or individual. The proportion of mutated mtDNA can vary significantly between tissues and between individuals (even in the same family), leading to a wide range of symptom severity.",
+                source: "\"Heteroplasmy refers to the presence of more than one type of mitochondrial DNA (mtDNA) within a cell or individual... Due to the varying levels of mutant mtDNA in different tissues, the severity and type of symptoms can differ widely among individuals with the same mtDNA mutation.\" (Metabolic and Mitochondrial Myopathies, Slide 23)"
+            },
+            {
+                learningObjective: "LO 3 (Metabolic and Mitochondrial Myopathies): Explain the concept of heteroplasmy and its relevance in the heterogenous nature of symptoms seen in the nine main forms of mitochondrial myopathy disorders.",
+                question: "A patient with a mitochondrial disorder is found to have 30% mutant mtDNA in her blood cells but 85% mutant mtDNA in a muscle biopsy sample. She has severe myopathy but no hematologic abnormalities. This finding is best explained by which principle related to heteroplasmy?",
+                options: {
+                    A: "The mutation is only expressed in muscle tissue.",
+                    B: "The threshold effect",
+                    C: "Paternal inheritance",
+                    D: "Spontaneous reversion of the mutation"
+                },
+                correctAnswer: "B",
+                rationale: "The threshold effect describes the principle that clinical symptoms of a mitochondrial disease typically only appear when the percentage of mutant mtDNA in a specific tissue exceeds a certain critical level. In this case, the muscle tissue has surpassed the threshold, leading to myopathy, while the blood cells have not.",
+                source: "\"The clinical manifestation of mitochondrial myopathies often depends on the proportion of mutant mtDNA. Symptoms typically appear when the level of mutant mtDNA exceeds a certain threshold, leading to a significant impairment of mitochondrial function.\" (Metabolic and Mitochondrial Myopathies, Slide 23)"
+            },
+            {
+                learningObjective: "LO 3 (Metabolic and Mitochondrial Myopathies): Explain the concept of heteroplasmy and its relevance in the heterogenous nature of symptoms seen in the nine main forms of mitochondrial myopathy disorders.",
+                question: "A woman with a known pathogenic mtDNA mutation wishes to have children. She asks about the risk of passing the condition to her offspring. What is the correct pattern of inheritance for mitochondrial DNA?",
+                options: {
+                    A: "It is inherited from the father only.",
+                    B: "It is inherited from the mother only.",
+                    C: "It follows an autosomal recessive pattern.",
+                    D: "It is inherited from both parents equally."
+                },
+                correctAnswer: "B",
+                rationale: "Mitochondrial DNA is located in the cytoplasm of the oocyte (egg cell). Since the sperm contributes virtually no cytoplasm during fertilization, mtDNA and any associated mutations are passed down exclusively from the mother to all of her children.",
+                source: "\"mtDNA is maternally inherited, meaning it is passed from mother to offspring. Only women pass mitochondrial DNA mutations on to their children through the oocyte.\" (Metabolic and Mitochondrial Myopathies, Slide 21 & 23)"
+            },
+            {
+                learningObjective: "LO 4 (Metabolic and Mitochondrial Myopathies): Explain the characteristics of the following mitochondrial myopathies and/or mitochondrial encephalomyopathies...",
+                question: "A 15-year-old boy presents with progressive drooping of both eyelids (ptosis), difficulty moving his eyes (ophthalmoplegia), and a \"salt-and-pepper\" pigmentary retinopathy on fundoscopic exam. An EKG reveals a cardiac conduction block. These findings are the classic triad for which mitochondrial syndrome?",
+                options: {
+                    A: "MELAS",
+                    B: "MERRF",
+                    C: "Leigh Syndrome",
+                    D: "Kearns-Sayre Syndrome (KSS)"
+                },
+                correctAnswer: "D",
+                rationale: "Kearns-Sayre Syndrome is defined by the triad of progressive external ophthalmoplegia (PEO), pigmentary retinopathy, and an onset before age 20. Cardiac conduction block is one of the additional criteria required for diagnosis.",
+                source: "\"Kearns-Sayre syndrome is characterized by progressive external ophthalmoplegia (PEO) and pigmentary retinopathy... At least one of the following must also be present: cardiac conduction block...\" (Metabolic and Mitochondrial Myopathies, Slide 22)"
+            },
+            {
+                learningObjective: "LO 4 (Metabolic and Mitochondrial Myopathies): Explain the characteristics of the following mitochondrial myopathies and/or mitochondrial encephalomyopathies...",
+                question: "A 20-year-old woman presents with a history of recurrent stroke-like episodes, seizures, and migraine-like headaches. Laboratory studies show a persistent lactic acidosis. A muscle biopsy reveals ragged red fibers. This constellation of symptoms is most characteristic of which condition?",
+                options: {
+                    A: "Kearns-Sayre Syndrome (KSS)",
+                    B: "Myoclonic epilepsy with ragged red fibers (MERRF)",
+                    C: "Mitochondrial encephalopathy, lactic acidosis, and stroke-like episodes (MELAS)",
+                    D: "Leigh Syndrome"
+                },
+                correctAnswer: "C",
+                rationale: "The acronym MELAS itself describes the key features of the syndrome: mitochondrial encephalopathy (seizures), lactic acidosis, and stroke-like episodes. These are the distinguishing symptoms of this specific mitochondrial disorder.",
+                source: "The table lists MELAS symptoms as \"Stroke-like episodes, seizures, lactic acidosis, muscle weakness, hearing loss, diabetes.\" (Metabolic and Mitochondrial Myopathies, Slide 25)"
+            },
+            {
+                learningObjective: "LO 4 (Metabolic and Mitochondrial Myopathies): Explain the characteristics of the following mitochondrial myopathies and/or mitochondrial encephalomyopathies...",
+                question: "A patient presents with myoclonus (\"jerking\" seizures), generalized epilepsy, and ataxia. A muscle biopsy shows ragged red fibers. What is the most likely diagnosis?",
+                options: {
+                    A: "Leigh Syndrome",
+                    B: "Kearns-Sayre Syndrome (KSS)",
+                    C: "Mitochondrial encephalopathy, lactic acidosis, and stroke-like episodes (MELAS)",
+                    D: "Myoclonic epilepsy with ragged red fibers (MERRF)"
+                },
+                correctAnswer: "D",
+                rationale: "MERRF is defined by its core symptoms of myoclonic epilepsy, ataxia, and the characteristic finding of ragged-red fibers on muscle biopsy. While it shares some features with MELAS, the prominent myoclonus is a key differentiator.",
+                source: "\"Myoclonic Epilepsy with Ragged-Red Fibers (MERRF) is characterized by myoclonic epilepsy, ataxia, and ragged-red fibers.\" (Metabolic and Mitochondrial Myopathies, Slide 27)"
+            },
+            // Disorders of Neuromuscular Transmission
+            {
+                learningObjective: "LO 1 (Disorders of Neuromuscular Transmission): Review the structural features of the neuromuscular junction and the process of synaptic transmission.",
+                question: "At the neuromuscular junction, acetylcholine is released from the motor nerve terminal and diffuses across the synaptic cleft. It binds to nicotinic receptors that are most densely concentrated on what specific postsynaptic structure?",
+                options: {
+                    A: "The base of the junctional folds",
+                    B: "The apex of the junctional folds",
+                    C: "The Schwann cell membrane",
+                    D: "The presynaptic membrane"
+                },
+                correctAnswer: "B",
+                rationale: "The postsynaptic membrane at the NMJ is characterized by deep junctional folds. Nicotinic acetylcholine receptors are clustered at the very top (apex) of these folds, directly opposite the presynaptic active zones where acetylcholine is released.",
+                source: "\"Postsynpatic features: High density of nicotinic acetylcholine receptors on the apex of the junctional folds.\" (Disorders of Neuromuscular Transmission, Slide 3)"
+            },
+            {
+                learningObjective: "LO 1 (Disorders of Neuromuscular Transmission): Review the structural features of the neuromuscular junction and the process of synaptic transmission.",
+                question: "An action potential arriving at the presynaptic motor nerve terminal triggers the opening of voltage-gated calcium channels. These channels are most highly concentrated in which specific region of the terminal?",
+                options: {
+                    A: "The entire presynaptic membrane",
+                    B: "The area covered by the Schwann cell",
+                    C: "The active zones",
+                    D: "The node of Ranvier"
+                },
+                correctAnswer: "C",
+                rationale: "The active zones are specialized areas on the presynaptic membrane directly opposite the postsynaptic junctional folds. They have a high density of P/Q-type voltage-gated calcium channels, which are crucial for triggering the rapid, localized release of acetylcholine vesicles.",
+                source: "\"Presynpatic features... Active zones – high density of P/Q type voltage gated calcium channels.\" (Disorders of Neuromuscular Transmission, Slide 3)"
+            },
+            {
+                learningObjective: "LO 1 (Disorders of Neuromuscular Transmission): Review the structural features of the neuromuscular junction and the process of synaptic transmission.",
+                question: "After an end-plate potential is generated, an action potential is propagated along the muscle fiber membrane. This depolarization is primarily caused by the influx of which ion through voltage-gated channels?",
+                options: {
+                    A: "K+",
+                    B: "Cl-",
+                    C: "Na+",
+                    D: "Ca2+"
+                },
+                correctAnswer: "C",
+                rationale: "The initial depolarization at the end plate (the EPP) brings the surrounding sarcolemma to threshold. This triggers the opening of a large number of voltage-gated sodium (Na+) channels, leading to a massive influx of Na+ and the generation of a self-propagating muscle action potential.",
+                source: "\"...depolarization required to activate the voltage gated Na+ channels to elicit a muscle action potential...\" and \"Voltage gated Na+ channels at base of junctional folds (secondary synaptic cleft).\" (Disorders of Neuromuscular Transmission, Slides 5 & 3)"
+            },
+            {
+                learningObjective: "LO 2 (Disorders of Neuromuscular Transmission): Discuss the clinical presentation and pathogenesis of the following diseases: Myasthenia Gravis, Lambert-Eaton Myasthenic Syndrome, and Botulism.",
+                question: "A 27-year-old medical student presents with ptosis and diplopia that worsen as the day progresses. She notes that her symptoms improve with rest. This pattern of fatigable weakness is the hallmark of myasthenia gravis, which is caused by antibodies targeting which structure?",
+                options: {
+                    A: "Presynaptic P/Q-type voltage-gated calcium channels",
+                    B: "Acetylcholinesterase in the synaptic cleft",
+                    C: "Postsynaptic acetylcholine receptors",
+                    D: "Presynaptic SNARE proteins"
+                },
+                correctAnswer: "C",
+                rationale: "Myasthenia gravis is a postsynaptic disorder caused by antibodies that block, alter, or destroy nicotinic acetylcholine receptors on the muscle end plate. This reduces the efficiency of neuromuscular transmission, leading to the characteristic fatigable weakness.",
+                source: "\"Pathophysiology – antibody directed destruction of postsynaptic acetylcholine receptors.\" (Disorders of Neuromuscular Transmission, Slide 6)"
+            },
+            {
+                learningObjective: "LO 2 (Disorders of Neuromuscular Transmission): Discuss the clinical presentation and pathogenesis of the following diseases: Myasthenia Gravis, Lambert-Eaton Myasthenic Syndrome, and Botulism.",
+                question: "A 67-year-old man with a 50-pack-year smoking history presents with progressive proximal muscle weakness, dry mouth, and areflexia. His weakness is more pronounced in his legs than his arms. This clinical picture is highly suggestive of Lambert-Eaton Myasthenic Syndrome (LEMS), which is often a paraneoplastic syndrome associated with small cell lung cancer. LEMS is caused by antibodies directed against which target?",
+                options: {
+                    A: "Postsynaptic acetylcholine receptors",
+                    B: "Presynaptic P/Q-type voltage-gated calcium channels (VGCC)",
+                    C: "Acetylcholinesterase",
+                    D: "Synaptic vesicle proteins"
+                },
+                correctAnswer: "B",
+                rationale: "LEMS is a presynaptic disorder. The pathogenic antibodies target the P/Q-type voltage-gated calcium channels on the motor nerve terminal. This impairs the influx of calcium needed for acetylcholine release, resulting in muscle weakness.",
+                source: "\"Pathophysiology – antibody mediated destruction of the P/Q VGCC and presynaptic vesicle docking protein synaptotagmin.\" (Disorders of Neuromuscular Transmission, Slide 7)"
+            },
+            {
+                learningObjective: "LO 2 (Disorders of Neuromuscular Transmission): Discuss the clinical presentation and pathogenesis of the following diseases: Myasthenia Gravis, Lambert-Eaton Myasthenic Syndrome, and Botulism.",
+                question: "An elderly couple is brought to the emergency department with rapidly progressive, descending paralysis. Symptoms started with blurry vision, ptosis, and slurred speech and have now progressed to respiratory weakness. They report eating home-canned vegetables the previous night. The toxin responsible for botulism causes this paralysis by what mechanism?",
+                options: {
+                    A: "Blocking postsynaptic acetylcholine receptors",
+                    B: "Inhibiting acetylcholinesterase",
+                    C: "Creating pores in the presynaptic membrane",
+                    D: "Preventing the release of acetylcholine from the presynaptic terminal"
+                },
+                correctAnswer: "D",
+                rationale: "Botulinum toxin, produced by Clostridium botulinum, is a protease that cleaves SNARE proteins in the presynaptic terminal. These proteins are essential for the docking and fusion of acetylcholine vesicles, so the toxin effectively blocks neurotransmitter release, causing a flaccid paralysis.",
+                source: "\"Pathophysiology – toxin produced by Clostridium Botulinum, specifically target proteins in the presynaptic nerve terminal involved in docking and fusion of synaptic vesicles causing failure of normal acetylcholine release...\" (Disorders of Neuromuscular Transmission, Slide 9)"
+            },
+            // Pathology of Primary Myopathies
+            {
+                learningObjective: "LO 1 (Pathology of Primary Myopathies): Review the histology of muscle including: 4 main components of motor unit and associated diseases.",
+                question: "A patient is diagnosed with a disease affecting the motor neurons in the spinal cord. According to the motor unit concept, this pathology would be classified as which type of disorder?",
+                options: {
+                    A: "Myopathy",
+                    B: "Neuromuscular junction disorder",
+                    C: "Neurogenic atrophy",
+                    D: "Dystrophy"
+                },
+                correctAnswer: "C",
+                rationale: "The motor unit consists of four components: the motor neuron, its axon, the neuromuscular junction, and the muscle fibers it innervates. A disease of the motor neuron itself (e.g., ALS) leads to denervation of the muscle fibers, resulting in neurogenic atrophy.",
+                source: "The diagram shows an arrow pointing from the 'Motor Neuron' component to the label 'Neurogenic Atrophy'. (Pathology of primary myopathies, Slide 4)"
+            },
+            {
+                learningObjective: "LO 1 (Pathology of Primary Myopathies): Review the histology of muscle including: 4 main components of motor unit and associated diseases.",
+                question: "A muscle biopsy is taken from a patient with progressive weakness. The pathologist observes atrophic, angulated muscle fibers, often in small groups. This pattern is most indicative of a disease process affecting which component of the motor unit?",
+                options: {
+                    A: "The muscle fiber itself (myopathy)",
+                    B: "The neuromuscular junction",
+                    C: "The motor neuron or its axon (neurogenic process)",
+                    D: "The surrounding connective tissue"
+                },
+                correctAnswer: "C",
+                rationale: "When a motor neuron or its axon is damaged, the muscle fibers it innervates lose their trophic support and undergo atrophy. Histologically, this appears as small, angulated fibers. This is a key feature that distinguishes neurogenic processes from myopathic ones.",
+                source: "\"Neurogenic - Atrophic angulated fibers (abrupt transition).\" (Pathology of primary myopathies, Slide 10)"
+            },
+            {
+                learningObjective: "LO 1 (Pathology of Primary Myopathies): Review the histology of muscle including: 4 main components of motor unit and associated diseases.",
+                question: "A patient with myasthenia gravis experiences muscle weakness due to an autoimmune attack on acetylcholine receptors. This pathology is localized to which of the four main components of the motor unit?",
+                options: {
+                    A: "Motor Neuron",
+                    B: "Axon",
+                    C: "Neuromuscular Junction",
+                    D: "Skeletal Muscle Fiber"
+                },
+                correctAnswer: "C",
+                rationale: "Myasthenia gravis is the archetypal disease of the neuromuscular junction, where the transmission of the signal from nerve to muscle is impaired. The pathology is not in the nerve or the muscle fiber itself, but at the synapse between them.",
+                source: "The diagram shows an arrow pointing from the 'Neuromuscular Junction' to 'Myasthenia gravis'. (Pathology of primary myopathies, Slide 4)"
+            },
+            {
+                learningObjective: "LO 2 (Pathology of Primary Myopathies): Review the histology of muscle including: 2 fiber types and their characteristics.",
+                question: "An elite marathon runner undergoes a muscle biopsy of his gastrocnemius. The biopsy is stained for mitochondrial density. Which finding would be expected in this athlete's muscle?",
+                options: {
+                    A: "A predominance of Type II fibers with low mitochondrial density.",
+                    B: "A predominance of Type I fibers with high mitochondrial density.",
+                    C: "Equal proportions of Type I and Type II fibers.",
+                    D: "A predominance of Type II fibers with high lipid content."
+                },
+                correctAnswer: "B",
+                rationale: "Type I (slow-twitch) fibers are adapted for endurance activities. They have high mitochondrial density, high lipid content, and rely on aerobic metabolism for sustained, slow contraction.",
+                source: "\"Type I (Slow-twitch)... Mitochondrial density: High... Example: Endurance sports (e.g. marathon).\" (Pathology of primary myopathies, Slide 6)"
+            },
+            {
+                learningObjective: "LO 2 (Pathology of Primary Myopathies): Review the histology of muscle including: 2 fiber types and their characteristics.",
+                question: "A muscle biopsy is stained with ATPase at pH 9.4, which stains Type II fibers dark. This type of fiber is known for its role in rapid, powerful movements. Which metabolic characteristic is typical of Type II fibers?",
+                options: {
+                    A: "High oxidative; low glycolytic (aerobic)",
+                    B: "Low oxidative; high glycolytic (anaerobic)",
+                    C: "High lipid content",
+                    D: "High mitochondrial density"
+                },
+                correctAnswer: "B",
+                rationale: "Type II (fast-twitch) fibers are adapted for short bursts of powerful movement (sprint sports). They have low mitochondrial density and rely on anaerobic, high-glycolytic metabolism for energy.",
+                source: "\"Type II (Fast-twitch)... Energy/ Metabolism: Low oxidative; high glycolytic (anaerobic)... Example: Sprint sports.\" (Pathology of primary myopathies, Slide 6)"
+            },
+            {
+                learningObjective: "LO 2 (Pathology of Primary Myopathies): Review the histology of muscle including: 2 fiber types and their characteristics.",
+                question: "A patient with long-term corticosteroid use develops proximal muscle weakness. A muscle biopsy is performed. Atrophy of which fiber type would be the most characteristic finding in steroid myopathy?",
+                options: {
+                    A: "Type I fibers only",
+                    B: "Both Type I and Type II fibers equally",
+                    C: "Type II fibers",
+                    D: "All fibers, with neurogenic changes"
+                },
+                correctAnswer: "C",
+                rationale: "Type II fiber atrophy is a common, non-specific finding in several conditions, including disuse, steroid therapy, and Cushing's syndrome.",
+                source: "\"Type-2 atrophy – disuse, steroid myopathy.\" (Pathology of primary myopathies, Slide 2) and \"Steroid myopathy: Increased corticosteroids.\" (Pathology of primary myopathies, Slide 30)"
+            },
+            {
+                learningObjective: "LO 3 (Pathology of Primary Myopathies): Outline a basic diagnostic approach for muscle disorders including: Clinical and laboratory features associated with muscle disorders.",
+                question: "A 40-year-old woman presents with proximal muscle weakness and an erythematous rash on her eyelids (heliotrope rash) and knuckles (Gottron papules). Blood tests are ordered. A significant elevation in which of the following serum enzymes would be most expected?",
+                options: {
+                    A: "Alanine aminotransferase (ALT)",
+                    B: "Lactate dehydrogenase (LDH)",
+                    C: "Creatine phospho-kinase (CPK/CK)",
+                    D: "Alkaline phosphatase (ALP)"
+                },
+                correctAnswer: "C",
+                rationale: "Creatine kinase is an enzyme that is abundant in muscle tissue. In conditions that cause muscle damage or inflammation, such as myositis or muscular dystrophy, CK leaks out of the damaged muscle fibers into the bloodstream, leading to markedly elevated serum levels.",
+                source: "\"Clinical pathology: - Increased creatine phospho-kinase (CPK/ CK) – Myositis, early dystrophy.\" (Pathology of primary myopathies, Slide 9)"
+            },
+            {
+                learningObjective: "LO 3 (Pathology of Primary Myopathies): Outline a basic diagnostic approach for muscle disorders including: Clinical and laboratory features associated with muscle disorders.",
+                question: "A patient presents with progressive proximal muscle weakness. An electromyography (EMG) is performed to help differentiate between a myopathic and a neurogenic cause. Which EMG finding would be most consistent with a primary myopathy?",
+                options: {
+                    A: "High amplitude, long duration motor unit potentials",
+                    B: "Normal motor unit potentials",
+                    C: "Fibrillation potentials and positive sharp waves",
+                    D: "Low amplitude, short duration motor unit potentials"
+                },
+                correctAnswer: "D",
+                rationale: "In a myopathy, individual muscle fibers are lost, so each motor unit contains fewer fibers. When the motor unit fires, the resulting electrical potential is smaller (low amplitude) and shorter in duration. This is in contrast to neurogenic disorders, which often show large-amplitude potentials due to reinnervation.",
+                source: "\"Electromyography: - Myopathic vs Neurogenic.\" (Pathology of primary myopathies, Slide 9) and \"Electromyography (EMG) – Myopathic (low amplitude small units).\" (Pathology of primary myopathies, Slide 24)"
+            },
+            {
+                learningObjective: "LO 3 (Pathology of Primary Myopathies): Outline a basic diagnostic approach for muscle disorders including: Clinical and laboratory features associated with muscle disorders.",
+                question: "A patient with suspected inflammatory myopathy undergoes serological testing. The presence of Anti-Jo1 antibodies is strongly associated with which specific clinical syndrome?",
+                options: {
+                    A: "Dermatomyositis with malignancy",
+                    B: "Inclusion body myositis",
+                    C: "Anti-synthetase syndrome",
+                    D: "Steroid-induced myopathy"
+                },
+                correctAnswer: "C",
+                rationale: "Anti-Jo1 is the most common autoantibody found in patients with anti-synthetase syndrome, a subset of inflammatory myopathies characterized by myositis, interstitial lung disease, arthritis, and \"mechanic's hands.\"",
+                source: "\"Anti-synthetase syndrome (ASS)... Antibody: Anti-Jo1 (Anti-aminoacyl-tRNA synthetase; anti-ARS).\" (Pathology of primary myopathies, Slide 24)"
+            },
+            {
+                learningObjective: "LO 4 (Pathology of Primary Myopathies): Outline a basic diagnostic approach for muscle disorders including: Diagnostic approach to muscle biopsy evaluation.",
+                question: "A muscle biopsy from a patient with profound weakness shows significant variation in muscle fiber size, internalized nuclei, and replacement of muscle tissue with fat and connective tissue. These features are most characteristic of which general disease process?",
+                options: {
+                    A: "Neurogenic atrophy",
+                    B: "Myopathy",
+                    C: "A neuromuscular junction disorder",
+                    D: "Normal aging"
+                },
+                correctAnswer: "B",
+                rationale: "Myopathic processes involve primary damage to the muscle fibers themselves. This leads to a characteristic set of histological changes including fiber size variation (from both atrophy and hypertrophy), degeneration, regeneration (with internalized nuclei), and, in chronic cases, fibrosis and fatty replacement.",
+                source: "\"Myopathic - Atrophy (gradual), - Rounded fibers, - Internalized nuclei.\" (Pathology of primary myopathies, Slide 10)"
+            },
+            {
+                learningObjective: "LO 4 (Pathology of Primary Myopathies): Outline a basic diagnostic approach for muscle disorders including: Diagnostic approach to muscle biopsy evaluation.",
+                question: "A pathologist is examining a muscle biopsy stained with H&E. She notes a group of small, angulated muscle fibers clustered together. This finding, known as group atrophy, is pathognomonic for which process?",
+                options: {
+                    A: "Myopathy due to muscular dystrophy",
+                    B: "Inflammatory myopathy",
+                    C: "Denervation and re-innervation",
+                    D: "Mitochondrial myopathy"
+                },
+                correctAnswer: "C",
+                rationale: "Group atrophy occurs in neurogenic disorders. When a motor neuron dies, its muscle fibers become atrophic. Neighboring healthy motor neurons can sprout to \"re-innervate\" these denervated fibers, changing their fiber type to match the new neuron. If this new motor neuron later dies, all the fibers it controls (its now enlarged unit) will atrophy together, creating a \"group\" of atrophic fibers of the same type.",
+                source: "\"Neurogenic... Re-innervation (discussed later).\" (Pathology of primary myopathies, Slide 10) and \"Chronic denervation-reinnervation: Group atrophy.\" (Pathology of primary myopathies, Slide 33)"
+            },
+            {
+                learningObjective: "LO 4 (Pathology of Primary Myopathies): Outline a basic diagnostic approach for muscle disorders including: Diagnostic approach to muscle biopsy evaluation.",
+                question: "A muscle biopsy from a patient with suspected mitochondrial myopathy is stained with Gomori trichrome. The pathologist is looking for the hallmark feature of this disease, which appears as irregular, reddish accumulations, typically at the periphery of the muscle fiber. What is this feature called?",
+                options: {
+                    A: "Rimmed vacuoles",
+                    B: "Perifascicular atrophy",
+                    C: "Ragged red fibers",
+                    D: "Angulated fibers"
+                },
+                correctAnswer: "C",
+                rationale: "\"Ragged red fibers\" are the classic histological finding in mitochondrial myopathies. The red-staining material on the Gomori trichrome stain represents massive accumulations of abnormal mitochondria under the sarcolemma.",
+                source: "\"Muscle biopsy: Ragged red fibers (Gomori trichrome stain).\" (Pathology of primary myopathies, Slide 21)"
+            },
+            {
+                learningObjective: "LO 5 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Muscular dystrophy - Duchenne and Becker.",
+                question: "A 4-year-old boy has delayed motor milestones and uses his hands to push off his thighs to stand up (Gower's maneuver). His serum creatine kinase (CPK) level is found to be over 30 times the upper limit of normal. Genetic testing reveals a frameshift mutation in the dystrophin gene. What is the most likely diagnosis?",
+                options: {
+                    A: "Becker muscular dystrophy (BMD)",
+                    B: "Duchenne muscular dystrophy (DMD)",
+                    C: "Limb-girdle muscular dystrophy",
+                    D: "Polymyositis"
+                },
+                correctAnswer: "B",
+                rationale: "DMD is an X-linked recessive disorder caused by mutations (often deletions or frameshift mutations) that lead to a complete absence of the dystrophin protein. It presents in early childhood with progressive proximal weakness, calf pseudo-hypertrophy, Gower's maneuver, and extremely high CPK levels.",
+                source: "\"DMD: 5 phases -... Early ambulatory phase (1-6 years): delayed motor milestones (pelvic)... Difficulty rising from floor (Gower's maneuver).\" and \"Dystrophin gene [DMD]: Deletion (65%), Frameshift mutation (25%).\" (Pathology of primary myopathies, Slides 16 & 15)"
+            },
+            {
+                learningObjective: "LO 5 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Muscular dystrophy - Duchenne and Becker.",
+                question: "A 15-year-old boy presents with muscle cramps and mild proximal weakness, particularly during sports. His CPK level is 5 times the upper limit of normal. A muscle biopsy is performed, and immunohistochemistry shows a reduced amount of dystrophin protein at the sarcolemma, but it is not completely absent. What is the most likely diagnosis?",
+                options: {
+                    A: "Duchenne muscular dystrophy (DMD)",
+                    B: "Becker muscular dystrophy (BMD)",
+                    C: "Dermatomyositis",
+                    D: "Mitochondrial myopathy"
+                },
+                correctAnswer: "B",
+                rationale: "BMD is a milder form of dystrophinopathy, also X-linked. It is typically caused by in-frame mutations that allow for the production of a truncated but partially functional dystrophin protein. This results in a later onset and slower progression of weakness compared to DMD.",
+                source: "\"BMD: Milder, older age, usually cramps & weak in sports.\" and \"Dystrophin protein [BMD]: Reduced / abnormal (truncated); partly functional.\" (Pathology of primary myopathies, Slides 16 & 15)"
+            },
+            {
+                learningObjective: "LO 5 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Muscular dystrophy - Duchenne and Becker.",
+                question: "What is the underlying pathogenic mechanism that leads to muscle fiber damage in Duchenne and Becker muscular dystrophy?",
+                options: {
+                    A: "Autoimmune attack on the muscle fibers",
+                    B: "Impaired energy production by mitochondria",
+                    C: "Instability of the sarcolemma leading to membrane tears during contraction",
+                    D: "Denervation of muscle fibers due to motor neuron death"
+                },
+                correctAnswer: "C",
+                rationale: "The dystrophin protein acts as a mechanical stabilizer, linking the cytoskeleton to the cell membrane. Without functional dystrophin, the sarcolemma is fragile and susceptible to tearing during muscle contraction, leading to an influx of calcium, activation of proteases, and eventual myofiber degeneration.",
+                source: "\"Absence / defects in dystrophin protein -> Membrane tears during contraction -> Ca++ influx -> 1. Protease activation, 2. Mitochondrial dysfunction -> Myofiber degeneration.\" (Pathology of primary myopathies, Slide 15)"
+            },
+            {
+                learningObjective: "LO 6 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Mitochondrial myopathy (a mitochondrial disease).",
+                question: "A patient with a diagnosed mitochondrial myopathy presents with exercise intolerance. Which of the following laboratory findings is a key biochemical hallmark of impaired mitochondrial oxidative phosphorylation?",
+                options: {
+                    A: "Elevated serum creatine kinase (CPK)",
+                    B: "Lactic acidosis",
+                    C: "Low blood glucose",
+                    D: "High serum ammonia"
+                },
+                correctAnswer: "B",
+                rationale: "When mitochondrial oxidative phosphorylation is impaired, cells cannot efficiently produce ATP through aerobic metabolism. To compensate, they rely more heavily on anaerobic glycolysis, which leads to the overproduction and accumulation of lactic acid.",
+                source: "\"Tests: - Blood: Mildly increased CPK; Lactic acidosis; FGF-21.\" (Pathology of primary myopathies, Slide 21)"
+            },
+            {
+                learningObjective: "LO 6 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Mitochondrial myopathy (a mitochondrial disease).",
+                question: "A muscle biopsy is performed on a patient with ptosis and proximal weakness. The Gomori trichrome stain reveals muscle fibers with subsarcolemmal reddish-purple accumulations. What do these \"ragged red fibers\" represent?",
+                options: {
+                    A: "Collections of inflammatory cells",
+                    B: "Glycogen deposits",
+                    C: "Proliferation of abnormal mitochondria",
+                    D: "Aggregates of amyloid protein"
+                },
+                correctAnswer: "C",
+                rationale: "The characteristic \"ragged red fiber\" seen in mitochondrial myopathies is the result of a compensatory proliferation of mitochondria, many of which are structurally abnormal. These mitochondria accumulate under the sarcolemma, creating the distinctive appearance on a trichrome stain.",
+                source: "\"Muscle biopsy: Ragged red fibers (Gomori trichrome stain).\" and the image annotation points to \"Abnormal Mitochondria- circular cristae, crystals.\" (Pathology of primary myopathies, Slide 21)"
+            },
+            {
+                learningObjective: "LO 6 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Mitochondrial myopathy (a mitochondrial disease).",
+                question: "Mitochondrial myopathies are often multisystem disorders because mitochondria are essential for all cells, but tissues with high energy demands are most affected. Besides skeletal muscle, which of the following is most commonly affected?",
+                options: {
+                    A: "Skin",
+                    B: "Adipose tissue",
+                    C: "Bone",
+                    D: "Brain"
+                },
+                correctAnswer: "D",
+                rationale: "The central nervous system (brain) has extremely high energy requirements and is therefore highly vulnerable to defects in mitochondrial function. This is why many mitochondrial myopathies are actually encephalomyopathies, with prominent neurological symptoms like seizures, stroke-like episodes, and dementia.",
+                source: "\"Clinically: affect tissues rich in mitochondria (brain, skeletal muscle).\" (Pathology of primary myopathies, Slide 21)"
+            },
+            {
+                learningObjective: "LO 7 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Inflammatory myopathy - Polymyositis, Dermatomyositis, Inclusion Body Myositis.",
+                question: "A 50-year-old woman presents with several months of progressive proximal muscle weakness and a characteristic violaceous (heliotrope) rash on her eyelids and erythematous papules over her knuckles (Gottron papules). A muscle biopsy would most likely show inflammation in which location?",
+                options: {
+                    A: "Surrounding individual non-necrotic muscle fibers (endomysial)",
+                    B: "Around blood vessels and between fascicles (perimysial)",
+                    C: "Exclusively within necrotic fibers",
+                    D: "Concentrated within rimmed vacuoles"
+                },
+                correctAnswer: "B",
+                rationale: "Dermatomyositis is characterized by a humorally-mediated microangiopathy. The histopathology reflects this, with the primary inflammatory infiltrate being perimysial (around fascicles) and perivascular. This is often accompanied by perifascicular atrophy.",
+                source: "\"Dermatomyositis... Histopathology: Myositis (perimysial) + Perifascicular atrophy.\" (Pathology of primary myopathies, Slide 25)"
+            },
+            {
+                learningObjective: "LO 7 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Inflammatory myopathy - Polymyositis, Dermatomyositis, Inclusion Body Myositis.",
+                question: "A 68-year-old man presents with a slowly progressive weakness that asymmetrically affects both proximal (quadriceps) and distal (finger flexors) muscles. A muscle biopsy shows endomysial inflammation with CD8+ T-lymphocytes invading non-necrotic muscle fibers, as well as fibers containing vacuoles with amyloid deposits. What is the most likely diagnosis?",
+                options: {
+                    A: "Polymyositis",
+                    B: "Dermatomyositis",
+                    C: "Inclusion Body Myositis (IBM)",
+                    D: "Duchenne muscular dystrophy"
+                },
+                correctAnswer: "C",
+                rationale: "IBM is distinguished from other inflammatory myopathies by its insidious onset in older adults, involvement of both proximal and distal muscles, and its unique pathology. The key features are endomysial inflammation similar to polymyositis, but with the addition of \"rimmed vacuoles\" which contain amyloid and other protein aggregates.",
+                source: "\"Inclusion body myositis... Proximal weakness (quadriceps) & Distal weakness (finger flexors)... Myositis (endomysial) + Rimmed vacuoles... CD8T-lymphocytes, β-Amyloid, p-tau...\" (Pathology of primary myopathies, Slide 25)"
+            },
+            {
+                learningObjective: "LO 7 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Inflammatory myopathy - Polymyositis, Dermatomyositis, Inclusion Body Myositis.",
+                question: "A 45-year-old woman is diagnosed with polymyositis. Her muscle biopsy shows an inflammatory infiltrate composed primarily of cytotoxic T-lymphocytes surrounding and invading individual muscle fibers. Which cell surface marker would be predominant on these infiltrating lymphocytes?",
+                options: {
+                    A: "CD4",
+                    B: "CD8",
+                    C: "CD20",
+                    D: "CD19"
+                },
+                correctAnswer: "B",
+                rationale: "Polymyositis is thought to be a T-cell mediated disorder where cytotoxic (CD8+) T-lymphocytes directly attack muscle fibers that they recognize as foreign. This is reflected in the histopathology, which shows endomysial inflammation with CD8+ cells surrounding and invading non-necrotic fibers.",
+                source: "\"Polymyositis... Immunohistochemistry: MHC-1 (diffuse), CD8 T-lymphocytes (around non-necrotic fibers).\" (Pathology of primary myopathies, Slide 25)"
+            },
+            {
+                learningObjective: "LO 8 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Type-2 atrophy – disuse, steroid myopathy.",
+                question: "A 60-year-old woman who has been on high-dose prednisone for 6 months for rheumatoid arthritis complains of new-onset difficulty climbing stairs and rising from a chair. Her CPK level is normal. A muscle biopsy is performed. What is the most likely finding?",
+                options: {
+                    A: "Perifascicular atrophy",
+                    B: "Endomysial inflammation",
+                    C: "Selective atrophy of Type II fibers",
+                    D: "Ragged red fibers"
+                },
+                correctAnswer: "C",
+                rationale: "Prolonged use of corticosteroids is a well-known cause of steroid myopathy. The primary pathologic finding is selective atrophy of Type II (fast-twitch) muscle fibers, without significant inflammation or necrosis, which explains the normal CPK.",
+                source: "\"Type-2 atrophy – disuse, steroid myopathy... Steroid myopathy: Increased corticosteroids - Exogenous (chronic prednisone treatment).\" (Pathology of primary myopathies, Slides 22 & 30)"
+            },
+            {
+                learningObjective: "LO 8 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Type-2 atrophy – disuse, steroid myopathy.",
+                question: "An 80-year-old man has been bedridden for 3 months following a hip fracture. He has developed significant, generalized muscle weakness. A muscle biopsy would most likely demonstrate which histologic change?",
+                options: {
+                    A: "Myonecrosis with regeneration",
+                    B: "Type II fiber atrophy",
+                    C: "Endomysial inflammation with CD8+ cells",
+                    D: "Fiber type grouping"
+                },
+                correctAnswer: "B",
+                rationale: "Prolonged inactivity or immobilization (disuse) leads to muscle atrophy, which preferentially affects the Type II (fast-twitch) fibers. This is a primary contributor to the weakness seen in immobilized or bedridden patients.",
+                source: "\"Type 2 fiber atrophy - Disuse of muscle.\" (Pathology of primary myopathies, Slide 30)"
+            },
+            {
+                learningObjective: "LO 8 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Type-2 atrophy – disuse, steroid myopathy.",
+                question: "Which of the following conditions is NOT typically associated with selective Type II fiber atrophy?",
+                options: {
+                    A: "Chronic steroid therapy",
+                    B: "Prolonged bed rest (disuse)",
+                    C: "Cushing's syndrome",
+                    D: "Amyotrophic lateral sclerosis (ALS)"
+                },
+                correctAnswer: "D",
+                rationale: "ALS is a neurogenic disorder that causes denervation atrophy. While this results in muscle fiber atrophy, the pattern is typically one of group atrophy and angulated fibers affecting both fiber types, not selective atrophy of only Type II fibers. The other options are classic causes of Type II atrophy.",
+                source: "The slide on Type 2 atrophy lists \"Disuse\" and \"Steroid myopathy\" (which includes Cushing's). The slides on neurogenic atrophy show group atrophy affecting both fiber types. (Pathology of primary myopathies, Slides 30, 32, 33)"
+            },
+            {
+                learningObjective: "LO 9 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Neurogenic atrophy - ALS, SMA, diabetic peripheral neuropathy.",
+                question: "A 60-year-old man presents with a one-year history of progressive weakness, muscle wasting, and fasciculations. Examination reveals both upper motor neuron signs (spasticity, hyperreflexia) and lower motor neuron signs (atrophy, weakness). This combination of findings is characteristic of which disease?",
+                options: {
+                    A: "Spinal muscular atrophy (SMA)",
+                    B: "Duchenne muscular dystrophy",
+                    C: "Amyotrophic lateral sclerosis (ALS)",
+                    D: "Myasthenia gravis"
+                },
+                correctAnswer: "C",
+                rationale: "ALS is defined by the progressive degeneration of both upper motor neurons (in the brain) and lower motor neurons (in the spinal cord and brainstem). This unique combination of UMN and LMN signs is the clinical hallmark of the disease.",
+                source: "\"Progressive degeneration of both lower (LMN) & upper motor neurons (UMN)... LMN - Muscle weakness, atrophy... UMN - Spasticity, hyper-reflexia, Babinski sign.\" (Pathology of primary myopathies, Slide 34)"
+            },
+            {
+                learningObjective: "LO 9 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Neurogenic atrophy - ALS, SMA, diabetic peripheral neuropathy.",
+                question: "A 3-month-old infant presents with severe, symmetric muscle weakness (\"floppy infant\"), poor feeding, and respiratory distress. The infant has tongue fasciculations and areflexia but appears alert. This clinical presentation is most consistent with which genetic disorder?",
+                options: {
+                    A: "Duchenne muscular dystrophy",
+                    B: "Spinal muscular atrophy (SMA) Type I",
+                    C: "Myotonic dystrophy",
+                    D: "Pompe disease"
+                },
+                correctAnswer: "B",
+                rationale: "SMA Type I (Werdig-Hoffman disease) is the most severe form of SMA, presenting in infancy with profound hypotonia and weakness due to the degeneration of anterior horn cells (lower motor neurons). Tongue fasciculations are a characteristic sign.",
+                source: "\"SMA - 1 (Werdig Hoffman dis) [most common & lethal]... Onset: Birth – 4 months... Clinical feature: < in-utero movements, Hypotonia (Floppy infant); Unable to sit, Tongue fasciculations...\" (Pathology of primary myopathies, Slide 35)"
+            },
+            {
+                learningObjective: "LO 9 (Pathology of Primary Myopathies): Recognize the major clinical-pathologic, diagnostic features, differential diagnosis, pathophysiology and outcome of: Neurogenic atrophy - ALS, SMA, diabetic peripheral neuropathy.",
+                question: "A 65-year-old man with poorly controlled type 2 diabetes presents with numbness, tingling, and weakness in his feet and lower legs. A biopsy of a distal muscle shows evidence of denervation, including fiber type grouping. What is the most likely underlying cause of his neurogenic atrophy?",
+                options: {
+                    A: "Amyotrophic lateral sclerosis (ALS)",
+                    B: "Spinal muscular atrophy (SMA)",
+                    C: "Diabetic peripheral neuropathy",
+                    D: "Inclusion body myositis"
+                },
+                correctAnswer: "C",
+                rationale: "Diabetes mellitus is the most common cause of peripheral neuropathy. The long-standing hyperglycemia can damage axons (an \"axonal\" cause of neurogenic atrophy), leading to denervation of distal muscles and the characteristic \"stocking-glove\" pattern of sensory and motor deficits.",
+                source: "\"Axonal... - Peripheral neuropathy - diabetes, vasculitis, uremia, toxin.\" and \"Diabetes mellitus: Most common cause of peripheral neuropathy.\" (Pathology of primary myopathies, Slides 32 & 36)"
+            },
+            // Common Hand Problems
+            {
+                learningObjective: "LO 1 (Common Hand Problems): Review musculoskeletal anatomy of the hand and wrist.",
+                question: "A patient falls on an outstretched hand and experiences pain and tenderness in the \"anatomical snuffbox.\" An X-ray is ordered to rule out a fracture of which carpal bone, which is most commonly fractured and is at risk for avascular necrosis?",
+                options: {
+                    A: "Lunate",
+                    B: "Capitate",
+                    C: "Scaphoid",
+                    D: "Hamate"
+                },
+                correctAnswer: "C",
+                rationale: "The scaphoid bone is located at the base of the thumb and forms the floor of the anatomical snuffbox. It is the most frequently fractured carpal bone, and due to its tenuous blood supply, fractures are at high risk for nonunion and avascular necrosis.",
+                source: "The diagram labels the scaphoid bone at the base of the thumb. (Anatomy Review, Slide 7)"
+            },
+            {
+                learningObjective: "LO 1 (Common Hand Problems): Review musculoskeletal anatomy of the hand and wrist.",
+                question: "A patient has an infection within the flexor tendon sheath of the ring finger. The proximal extent of this sheath, which can contain the infection, is located at what level?",
+                options: {
+                    A: "The distal interphalangeal (DIP) joint",
+                    B: "The proximal interphalangeal (PIP) joint",
+                    C: "The metacarpophalangeal (MP) joint",
+                    D: "The mid-palm"
+                },
+                correctAnswer: "D",
+                rationale: "The digital synovial sheaths for the index, long, and ring fingers extend from the distal phalanx proximally to the level of the mid-palm. This anatomical arrangement is important in understanding the spread of infections like purulent flexor tenosynovitis.",
+                source: "The diagram shows the 'Digital synovial tendon sheaths' extending proximally into the palm. (Common Hand Problems, Slide 46)"
+            },
+            {
+                learningObjective: "LO 1 (Common Hand Problems): Review musculoskeletal anatomy of the hand and wrist.",
+                question: "The carpometacarpal (CMC) joint of the thumb is a saddle joint that allows for a wide range of motion. It is formed by the articulation of the base of the first metacarpal with which carpal bone?",
+                options: {
+                    A: "Scaphoid",
+                    B: "Trapezoid",
+                    C: "Trapezium",
+                    D: "Capitate"
+                },
+                correctAnswer: "C",
+                rationale: "The unique saddle shape of the articulation between the trapezium and the first metacarpal allows for the thumb's opposability and complex movements. This joint is also a common site for osteoarthritis.",
+                source: "The diagram shows the trapezium (labeled as #6) articulating with the base of the first metacarpal. (Anatomy Review, Slide 11)"
+            },
+            {
+                learningObjective: "LO 2 (Common Hand Problems): Review the neurovasculature of the hand and wrist.",
+                question: "A patient presents with numbness and tingling in the thumb, index finger, middle finger, and the radial half of the ring finger. These symptoms are consistent with compression of which nerve?",
+                options: {
+                    A: "Ulnar nerve",
+                    B: "Radial nerve",
+                    C: "Median nerve",
+                    D: "Musculocutaneous nerve"
+                },
+                correctAnswer: "C",
+                rationale: "The median nerve provides sensory innervation to the palmar aspect of the thumb, index, middle, and radial side of the ring finger. This is the classic distribution of symptoms in carpal tunnel syndrome.",
+                source: "The diagram of the palmar view shows the sensory distribution of the 'Median nerve' covering these specific digits. (Anatomy Review, Slide 20)"
+            },
+            {
+                learningObjective: "LO 2 (Common Hand Problems): Review the neurovasculature of the hand and wrist.",
+                question: "To assess the integrity of the blood supply to the hand, a physician performs an Allen test. This test evaluates the patency of the ulnar and radial arteries, which form the two major arterial arches in the palm. The radial artery is the primary contributor to which of these arches?",
+                options: {
+                    A: "Superficial palmar arch",
+                    B: "Deep palmar arch",
+                    C: "Dorsal carpal arch",
+                    D: "Both superficial and deep arches equally"
+                },
+                correctAnswer: "B",
+                rationale: "The radial artery courses dorsally around the wrist and then enters the palm to become the primary source of the deep palmar arch, which lies deep to the flexor tendons.",
+                source: "'Radial Artery – forms Deep Arch.' (Anatomy Review, Slide 19)"
+            },
+            {
+                learningObjective: "LO 2 (Common Hand Problems): Review the neurovasculature of the hand and wrist.",
+                question: "A patient suffers a deep laceration to the ulnar side of the wrist. In addition to sensory loss in the small finger and ulnar half of the ring finger, he would be expected to have weakness in most of the intrinsic muscles of the hand. Which of the following muscles is innervated by the median nerve and would therefore be spared?",
+                options: {
+                    A: "Adductor pollicis",
+                    B: "Dorsal interossei",
+                    C: "Lumbricals to the 4th and 5th digits",
+                    D: "Opponens pollicis"
+                },
+                correctAnswer: "D",
+                rationale: "The ulnar nerve innervates most of the small muscles of the hand. However, the thenar muscles (opponens pollicis, abductor pollicis brevis, flexor pollicis brevis) and the lumbricals to the 2nd and 3rd digits are innervated by the median nerve. Therefore, the opponens pollicis would be spared in a pure ulnar nerve injury at the wrist.",
+                source: "The diagram shows the thenar muscles (including opponens) within the distribution of the 'Median nerve'. (Anatomy Review, Slide 20)"
+            },
+            {
+                learningObjective: "LO 3 (Common Hand Problems): Discuss the clinical presentation, diagnosis, and management of common arthritis problems of the hand.",
+                question: "A 65-year-old woman presents with an \"aching\" pain at the base of her thumb that is worse with activities like opening jars. On examination, there is tenderness over the first carpometacarpal (CMC) joint, and a \"grind\" test (axial loading and rotation of the thumb) reproduces the pain. What is the most likely diagnosis?",
+                options: {
+                    A: "DeQuervain's tenosynovitis",
+                    B: "Carpal tunnel syndrome",
+                    C: "Arthritis of the 1st CMC joint",
+                    D: "Scaphoid fracture"
+                },
+                correctAnswer: "C",
+                rationale: "Osteoarthritis of the first CMC joint is very common, particularly in postmenopausal women. The classic symptoms are aching pain at the base of the thumb with activity, and the CMC \"grind\" test is a specific provocative maneuver for this condition.",
+                source: "'Arthritis of 1st CMC joint... Discussion: ... “Aching” at base of thumbs with activity... Diagnosis: Exam - CMC “grind” test.' (Common Hand Problems, Slides 84 & 85)"
+            },
+            {
+                learningObjective: "LO 3 (Common Hand Problems): Discuss the clinical presentation, diagnosis, and management of common arthritis problems of the hand.",
+                question: "A 58-year-old woman presents with a small, firm, translucent bump on the dorsal aspect of her finger over the distal interphalangeal (DIP) joint. It is causing a groove to form in her fingernail. The patient has known osteoarthritis. What is this lesion?",
+                options: {
+                    A: "Felon",
+                    B: "Paronychia",
+                    C: "Mucous cyst",
+                    D: "Herpetic whitlow"
+                },
+                correctAnswer: "C",
+                rationale: "A mucous cyst is a type of ganglion cyst that arises from an underlying arthritic DIP joint. It presents as a cyst near the nail bed and can cause pressure on the nail matrix, leading to a longitudinal groove or deformity in the nail.",
+                source: "'Mucous Cyst • Arthritis of DIP joint generates ganglion cyst... Can cause nail deformity – “grooving”.' (Common Hand Problems, Slides 31 & 32)"
+            },
+            {
+                learningObjective: "LO 3 (Common Hand Problems): Discuss the clinical presentation, diagnosis, and management of common arthritis problems of the hand.",
+                question: "A patient with severe, debilitating pain from first CMC joint arthritis has failed conservative management, including NSAIDs, splinting, and steroid injections. Which of the following is a common and effective surgical treatment option for this condition?",
+                options: {
+                    A: "Arthrodesis (joint fusion)",
+                    B: "Total joint replacement",
+                    C: "Ligament Reconstruction Tendon Interposition (LRTI)",
+                    D: "Synovectomy"
+                },
+                correctAnswer: "C",
+                rationale: "LRTI is a surgical procedure for advanced CMC arthritis that involves removing the arthritic trapezium bone and using a portion of a nearby tendon to reconstruct the ligaments and create a soft tissue cushion in the joint space.",
+                source: "'Management... Surgical - Arthroplasty – Ligament Reconstruction Tendon Interposition (LRTI).' (Common Hand Problems, Slide 86)"
+            },
+            {
+                learningObjective: "LO 4 (Common Hand Problems): Discuss the clinical presentation, diagnosis, and management of common infections of the hand including, but not limited to, felon, paronychia, herpetic whitlow, and purulent flexor tenosynovitis.",
+                question: "A patient presents with a painful, tense, and swollen fingertip pulp space after a minor puncture wound. The area is erythematous and exquisitely tender to palpation. What is the most likely diagnosis?",
+                options: {
+                    A: "Paronychia",
+                    B: "Herpetic whitlow",
+                    C: "Felon",
+                    D: "Cellulitis"
+                },
+                correctAnswer: "C",
+                rationale: "A felon is an abscess of the distal pulp space of the finger. The fibrous septa in this space confine the infection, leading to a tense, throbbing abscess that can compromise blood flow and cause osteomyelitis if not drained promptly.",
+                source: "'Felon ▪ pulp space.' (Common Hand Problems, Slide 35)"
+            },
+            {
+                learningObjective: "LO 4 (Common Hand Problems): Discuss the clinical presentation, diagnosis, and management of common infections of the hand including, but not limited to, felon, paronychia, herpetic whitlow, and purulent flexor tenosynovitis.",
+                question: "A patient presents with a swollen, flexed finger, fusiform swelling of the entire digit, tenderness along the course of the flexor tendon sheath, and severe pain with passive extension of the finger. These four findings are known as Kanavel's cardinal signs and are indicative of which hand emergency?",
+                options: {
+                    A: "Felon",
+                    B: "Septic arthritis",
+                    C: "Purulent flexor tenosynovitis",
+                    D: "Necrotizing fasciitis"
+                },
+                correctAnswer: "C",
+                rationale: "Kanavel's four cardinal signs are the classic clinical indicators of an infection within the flexor tendon sheath. This is a surgical emergency, as the increased pressure within the sheath can compromise the tendon's blood supply, leading to necrosis and permanent loss of function.",
+                source: "'Purulent Flexor Tenosynovitis... Kanavel’s 4 cardinal signs: 1. Flexion of digit 2. Swelling (circumferential) 3. Tenderness along sheath 4. Pain with passive extension.' (Common Hand Problems, Slide 48)"
+            },
+            {
+                learningObjective: "LO 4 (Common Hand Problems): Discuss the clinical presentation, diagnosis, and management of common infections of the hand including, but not limited to, felon, paronychia, herpetic whitlow, and purulent flexor tenosynovitis.",
+                question: "A dental hygienist presents with a cluster of painful vesicles on the tip of her index finger. She reports a tingling sensation before the vesicles appeared. She denies any recent trauma. What is the most appropriate management for this condition?",
+                options: {
+                    A: "Incision and drainage",
+                    B: "Intravenous antibiotics",
+                    C: "Oral antiviral medication and supportive care",
+                    D: "Steroid injection"
+                },
+                correctAnswer: "C",
+                rationale: "This presentation is classic for herpetic whitlow, an infection of the finger caused by the Herpes Simplex Virus. It is common in healthcare workers. The key to management is recognizing the condition and understanding that surgical incision and drainage is contraindicated, as it can lead to secondary bacterial infection and systemic viral spread.",
+                source: "'Herpetic Whitlow ▪ Herpes Simplex Virus ▪ Do NOT débride.' (Common Hand Problems, Slide 39)"
+            },
+            {
+                learningObjective: "LO 5 (Common Hand Problems): Discuss the clinical presentation, pathophysiology, diagnosis, and management of common problems of the hand including, but not limited to, trigger finger, Dupuytren’s contracture, carpal tunnel syndrome, DeQuervain’s disease, and ganglion cysts.",
+                question: "A 50-year-old woman complains of her ring finger \"catching\" or \"locking\" in a flexed position, which she has to manually straighten with a painful snap. She has tenderness over the palmar aspect of her metacarpophalangeal (MP) joint. This condition, known as trigger finger, is caused by stenosing tenosynovitis involving which structure?",
+                options: {
+                    A: "The A1 pulley",
+                    B: "The A2 pulley",
+                    C: "The transverse carpal ligament",
+                    D: "The extensor tendon"
+                },
+                correctAnswer: "A",
+                rationale: "Trigger finger is caused by inflammation and thickening of the flexor tendon and/or the A1 pulley, which is a fibrous band located at the level of the MP joint. This size mismatch prevents the tendon from gliding smoothly, causing the catching and locking sensation.",
+                source: "'Trigger Finger ▪ Anatomy... ▪ A1 pulley.' (Common Hand Problems, Slide 42)"
+            },
+            {
+                learningObjective: "LO 5 (Common Hand Problems): Discuss the clinical presentation, pathophysiology, diagnosis, and management of common problems of the hand including, but not limited to, trigger finger, Dupuytren’s contracture, carpal tunnel syndrome, DeQuervain’s disease, and ganglion cysts.",
+                question: "A 65-year-old man of Northern European descent presents with a painless nodule in his palm and a progressive flexion contracture of his ring finger. He is unable to lay his hand flat on a table. This condition is known as Dupuytren's contracture and is a fibroproliferative disease of which tissue?",
+                options: {
+                    A: "The flexor tendons",
+                    B: "The palmar aponeurosis",
+                    C: "The intrinsic muscles",
+                    D: "The skin"
+                },
+                correctAnswer: "B",
+                rationale: "Dupuytren's contracture is a disease of the palmar fascia (aponeurosis), where normal tissue is replaced by nodules and cords composed of myofibroblasts and Type III collagen. These cords progressively shorten and pull the fingers into flexion.",
+                source: "'Fibroproliferative disease of the hand... NOT painful.' (Common Hand Problems, Slide 53) and 'Cords – Type III collagen ▪ Normal palmar fascia – Type I collagen.' (Common Hand Problems, Slide 61)"
+            },
+            {
+                learningObjective: "LO 5 (Common Hand Problems): Discuss the clinical presentation, pathophysiology, diagnosis, and management of common problems of the hand including, but not limited to, trigger finger, Dupuytren’s contracture, carpal tunnel syndrome, DeQuervain’s disease, and ganglion cysts.",
+                question: "A 34-year-old new mother presents with pain on the radial side of her wrist, which is exacerbated by lifting her baby. On examination, a Finkelstein's test (flexing the thumb into the palm and then ulnarly deviating the wrist) elicits sharp pain. This is indicative of DeQuervain's disease, which is a stenosing tenosynovitis of which dorsal compartment of the wrist?",
+                options: {
+                    A: "First",
+                    B: "Second",
+                    C: "Third",
+                    D: "Fourth"
+                },
+                correctAnswer: "A",
+                rationale: "DeQuervain's disease involves inflammation of the tendons and sheath of the first dorsal compartment, which contains the abductor pollicis longus (APL) and extensor pollicis brevis (EPB) tendons.",
+                source: "'DeQuervain’s Disease ▪ 1st Dorsal Compartment Stenosing Tenosynovitis.' (Common Hand Problems, Slide 94)"
+            }
+        ];
+
+
+        const quizContainer = document.getElementById('quiz-container');
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const bodyElement = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                bodyElement.classList.add('light-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            } else {
+                bodyElement.classList.remove('light-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            }
+            localStorage.setItem('quizTheme', theme);
+        }
+
+        function loadQuiz() {
+            quizData.forEach((qData, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.classList.add('question-block');
+                questionBlock.id = `q${index}`;
+
+                const loText = document.createElement('div');
+                loText.classList.add('learning-objective');
+                loText.textContent = qData.learningObjective;
+                questionBlock.appendChild(loText);
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('question-text');
+                questionText.innerHTML = `${index + 1}. ${qData.question}`;
+                questionBlock.appendChild(questionText);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+                for (const optionKey in qData.options) {
+                    const optionId = `q${index}_${optionKey}`;
+                    const label = document.createElement('label');
+                    label.htmlFor = optionId;
+
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `q${index}`;
+                    radioInput.value = optionKey;
+                    radioInput.id = optionId;
+
+                    const labelText = document.createElement('span');
+                    labelText.textContent = ` ${optionKey}. ${qData.options[optionKey]}`;
+
+                    label.appendChild(radioInput);
+                    label.appendChild(labelText);
+                    optionsDiv.appendChild(label);
+                }
+                questionBlock.appendChild(optionsDiv);
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('button-container');
+
+                const checkButton = document.createElement('button');
+                checkButton.textContent = 'Check Answer';
+                checkButton.classList.add('check-button');
+                checkButton.onclick = () => checkAnswer(index);
+                buttonContainer.appendChild(checkButton);
+                questionBlock.appendChild(buttonContainer);
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.classList.add('feedback');
+                questionBlock.appendChild(feedbackDiv);
+
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        function checkAnswer(questionIndex) {
+            const questionBlockElement = document.getElementById(`q${questionIndex}`);
+            const selectedRadioButton = questionBlockElement.querySelector('input[type="radio"]:checked');
+
+            if (!selectedRadioButton) {
+                alert("Please select an answer first.");
+                return;
+            }
+
+            const selectedOptionKey = selectedRadioButton.value;
+            const qData = quizData[questionIndex];
+            const feedbackDiv = questionBlockElement.querySelector('.feedback');
+            const correct = selectedOptionKey === qData.correctAnswer;
+
+            let feedbackHTML = '';
+            if (correct) {
+                feedbackHTML = `<span class="feedback-status">Correct!</span>`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                feedbackHTML = `<span class="feedback-status">Incorrect. The correct answer is ${qData.correctAnswer}.</span>`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+
+            feedbackHTML += `<div class="feedback-rationale"><strong>Rationale:</strong> ${qData.rationale}</div>`;
+            feedbackHTML += `<div class="feedback-source"><strong>Source:</strong> ${qData.source}</div>`;
+            feedbackDiv.innerHTML = feedbackHTML;
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            if (bodyElement.classList.contains('light-theme')) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            applyTheme(savedTheme);
+            loadQuiz();
+        });
+    </script>
+</body>
+</html>
